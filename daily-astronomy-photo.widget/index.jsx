@@ -393,7 +393,8 @@ export const className = card("dark", 320, 320, ...LAYOUT.apod) + `
   .credit  { ${caption("rgba(255,255,255,0.4)")} font-size:8px; margin-top:8px; }
   .expand  { position:absolute; inset:0; z-index:6; cursor:pointer;
              background:rgba(8,8,14,0.92); backdrop-filter:blur(8px);
-             padding:22px; overflow-y:auto; }
+             padding:22px; overflow-y:auto; display:none; }
+  .apod-expanded .expand { display:block; }
   .etitle  { font-family:${serif}; font-style:italic; font-size:20px;
              color:${T.onDark}; line-height:1.1; }
   .etext   { font-family:${sans}; font-size:12px; line-height:1.5;
@@ -449,23 +450,23 @@ const apodPage = (iso) =>
   iso ? `https://apod.nasa.gov/apod/ap${iso.slice(2).replace(/-/g, "")}.html`
       : "https://apod.nasa.gov/apod/";
 
-// Full-explanation overlay is toggled via localStorage; run("true") forces a
-// re-render so the panel shows or hides on click.
-const EXPAND_KEY = "ws:apod:expand";
-const isExpanded = () => { try { return localStorage.getItem(EXPAND_KEY) === "1"; } catch (e) { return false; } };
+// Full-explanation overlay is toggled by adding/removing a class on the root
+// node. Übersicht's render() only re-runs when command output changes, so we
+// drive this directly via the DOM rather than React state — the panel is
+// always in the tree and revealed by CSS when .apod-expanded is set.
 const toggleExpand = (e) => {
-  if (e && e.stopPropagation) e.stopPropagation();
-  try { localStorage.setItem(EXPAND_KEY, isExpanded() ? "0" : "1"); } catch (err) {}
-  run("true");
+  if (!e) return;
+  e.stopPropagation();
+  const root = e.currentTarget.closest("[data-apod-root]");
+  if (root) root.classList.toggle("apod-expanded");
 };
 
 export const render = (props) => {
   const { data: m, loading, staleTs } = resolve("apod", props, parse, MOCK);
   if (loading) return <Skel tint={T.tintPurple} />;
-  const expanded = isExpanded();
 
   return (
-    <div aria-label={`Astronomy picture of the day: ${m.title}`}>
+    <div data-apod-root aria-label={`Astronomy picture of the day: ${m.title}`}>
       <DragHandle k="apod" />
       <ResizeHandle k="apod" />
       {m.isMp4
@@ -496,13 +497,11 @@ export const render = (props) => {
         <div className="caption">{m.caption}</div>
         {m.credit && <div className="credit">{m.credit}</div>}
       </div>
-      {expanded && (
-        <div className="expand" onClick={toggleExpand}>
-          <div className="etitle">{m.title}</div>
-          <div className="etext">{m.caption}</div>
-          {m.credit && <div className="ecredit">{m.credit}</div>}
-        </div>
-      )}
+      <div className="expand" onClick={toggleExpand}>
+        <div className="etitle">{m.title}</div>
+        <div className="etext">{m.caption}</div>
+        {m.credit && <div className="ecredit">{m.credit}</div>}
+      </div>
       {staleTs && <Stale ts={staleTs} />}
     </div>
   );
