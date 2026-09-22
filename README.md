@@ -1,6 +1,6 @@
 # daily-astronomy-photo
 
-> NASA's Astronomy Picture of the Day, full-bleed, with inline video on .mp4 days.
+> NASA's Astronomy Picture of the Day, broadcast on a 1958 Predicta television.
 
 [![Release](https://img.shields.io/github/v/release/jke48222/daily-astronomy-photo-widget?label=release)](https://github.com/jke48222/daily-astronomy-photo-widget/releases/latest) [![License: MIT](https://img.shields.io/github/license/jke48222/daily-astronomy-photo-widget)](LICENSE) ![Platform: macOS](https://img.shields.io/badge/platform-macOS-lightgrey)
 
@@ -12,7 +12,7 @@ runs on any Mac with no extra files beyond the bundled assets.
 
 ![screenshot](media/screenshot.png)
 
-The picture is a physical print: white-bordered, taped to the desk at two corners, the title handwritten underneath and the date typed on the border; the explanation is on the back. Typefaces: Caveat, Special Elite, and Barlow Condensed. All fonts are under the SIL Open Font License; see `daily-astronomy-photo.widget/fonts/OFL.txt`.
+The picture is tonight's broadcast on a 1958 Philco Predicta: a khaki picture tube on a brass stalk over a blond-wood cabinet with a cream control panel, two brass knobs, and a backlit APOD channel window. The photo sits behind curved glass with faint scanlines; click the screen to open it, the title to read the explanation as a teletext page, the window to open the APOD page. Typefaces: Michroma, VT323, and Inter. All fonts are under the SIL Open Font License; see `daily-astronomy-photo.widget/fonts/OFL.txt`.
 
 ## Before and after
 

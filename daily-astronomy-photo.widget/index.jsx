@@ -359,39 +359,52 @@ export const command =
   `curl -s "https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&thumbs=true"`;
 
 export const refreshFrequency = 1000 * 60 * 60 * 6;
-
 const FONTS = "daily-astronomy-photo.widget/fonts";
-// The picture as a physical print: a white-bordered photo taped to the desk
-// at two corners, the title handwritten under it, the date typed on the
-// border. Click the photo to open the full image, the caption to read the
-// explanation on the back, the date to open the APOD page.
-export const className = card("dark", 320, 330, ...LAYOUT.apod) + `
-  @font-face { font-family: "Caveat"; src: url("${FONTS}/Caveat-700.woff2") format("woff2"); font-weight: 700; }
-  @font-face { font-family: "Special Elite"; src: url("${FONTS}/SpecialElite-400.woff2") format("woff2"); }
-  @font-face { font-family: "Barlow Condensed"; src: url("${FONTS}/BarlowCondensed-600.woff2") format("woff2"); font-weight: 600; }
-  --type: "Special Elite", "Courier New", monospace; --hand: "Caveat", "Bradley Hand", cursive;
+// A 1958 Philco Predicta: the picture tube is a khaki rounded shell on a
+// brass stalk over a blond-wood cabinet with a cream control panel, two
+// brass knobs, and a backlit channel window. Tonight's broadcast is NASA's
+// picture of the day, behind curved glass with faint scanlines. Click the
+// screen to open the full image, the panel text to read the explanation as
+// a teletext page, the channel window to open the APOD page.
+export const className = card("dark", 330, 352, ...LAYOUT.apod) + `
+  @font-face { font-family: "Michroma"; src: url("${FONTS}/Michroma-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; src: url("${FONTS}/Inter-500.woff2") format("woff2"); font-weight: 500; }
+  @font-face { font-family: "Inter"; src: url("${FONTS}/Inter-600.woff2") format("woff2"); font-weight: 600; }
+  @font-face { font-family: "VT323"; src: url("${FONTS}/VT323-400.woff2") format("woff2"); }
+  --ui: "Inter", -apple-system, sans-serif; --khaki: #6B6B57; --khaki2: #4E4F40; --brass: #C9A55A; --panel: #F1EBDB;
   background: transparent; box-shadow: none; backdrop-filter: none; padding: 0; overflow: visible; user-select:none; -webkit-user-select:none;
-  .ws-stale { top: 26px; right: 30px; color: #8A8378; }
-  .ws-drag { top: 20px; left: 16px; color:#9a9184; background: rgba(0,0,0,0.05); } .ws-resize { bottom: 34px; right: 14px; color:#9a9184; background: rgba(0,0,0,0.05); }
-  .print { position:absolute; left: 8px; right: 8px; top: 12px; bottom: 26px; background: #FBFAF6; padding: 10px 10px 40px; transform: rotate(-1.4deg);
-           box-shadow: 0 18px 36px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.06); }
-  .photo { position:absolute; left: 10px; right: 10px; top: 10px; bottom: 44px; overflow:hidden; background:#07070f; cursor:pointer; }
-  .photo .bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .ws-drag { top: 12px; left: 40px; color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.3); } .ws-resize { bottom: 8px; right: 12px; color: #5b4322; background: rgba(0,0,0,0.08); }
+  .tube { position:absolute; left: 24px; right: 24px; top: 4px; height: 214px; border-radius: 34px 34px 26px 26px / 30px 30px 22px 22px;
+          background: linear-gradient(180deg, #7A7A64 0%, var(--khaki) 40%, var(--khaki2) 100%);
+          box-shadow: 0 22px 34px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 0 0 1px #2E2F27, inset 0 -3px 6px rgba(0,0,0,0.4); }
+  .bezel { position:absolute; inset: 10px 12px 20px; border-radius: 26px 26px 20px 20px / 24px 24px 18px 18px; background: #1E1F1A;
+           box-shadow: inset 0 0 0 2px var(--brass), inset 0 0 0 3px #3B3A2E, 0 0 0 1px #2E2F27; }
+  .screen { position:absolute; inset: 7px 8px 8px; border-radius: 22px 22px 16px 16px / 20px 20px 14px 14px; overflow:hidden; background:#07080A; cursor:pointer; }
+  .screen .bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter: saturate(0.9) contrast(1.06); }
   .cosmic { position:absolute; inset:0; background: radial-gradient(240px at 30% 35%, rgba(124,77,196,0.85), transparent), radial-gradient(200px at 70% 55%, rgba(196,77,150,0.55), transparent), #0a0a14; }
-  .star { position:absolute; border-radius:50%; background:#fff; }
-  .hero { position:absolute; border-radius:50%; background:#fff; box-shadow: 0 0 10px 3px rgba(255,255,255,0.85), 0 0 24px 8px rgba(168,97,222,0.45); }
-  .tape { position:absolute; width: 70px; height: 20px; background: rgba(255,241,204,0.6); box-shadow: 0 1px 2px rgba(0,0,0,0.18); backdrop-filter: blur(0.5px); }
-  .tape.tl { left: -20px; top: -6px; transform: rotate(-38deg); } .tape.tr { right: -20px; top: -6px; transform: rotate(38deg); }
-  .cap { position:absolute; left: 12px; right: 12px; bottom: 8px; cursor:pointer; }
-  .title { font: 700 17px/1.1 var(--hand); color:#2B2622; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .credit { font: 9px/1.2 var(--type); color:#8A8378; margin-top: 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .date { position:absolute; right: 12px; top: 302px; font: 10px/1 var(--type); color: rgba(255,255,255,0.75); letter-spacing: 1px; cursor:pointer; }
-  .playbadge { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:52px; height:52px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff; padding-left:4px; background:rgba(20,20,28,0.55); box-shadow:0 4px 14px rgba(0,0,0,0.5); }
-  .expand { position:absolute; inset:0; z-index:6; cursor:pointer; background: #F3EDDF; padding: 18px 16px; overflow-y:auto; display:none; box-shadow: inset 0 0 0 1px rgba(43,38,34,0.12); }
-  .apod-expanded .expand { display:block; }
-  .etitle { font: 700 18px/1.1 var(--hand); color:#2B2622; }
-  .etext { font: 10.5px/1.5 var(--type); color:#3A342E; margin-top: 10px; }
-  .ecredit { font: 600 8px/1 var(--cond, "Barlow Condensed"); letter-spacing: 1.6px; color:#8A8378; text-transform:uppercase; margin-top: 12px; }
+  .star { position:absolute; border-radius:50%; background:#fff; } .hero { position:absolute; border-radius:50%; background:#fff; box-shadow: 0 0 10px 3px rgba(255,255,255,0.85), 0 0 24px 8px rgba(168,97,222,0.45); }
+  .glass { position:absolute; inset:0; pointer-events:none; border-radius: inherit;
+           background: radial-gradient(ellipse 60% 40% at 28% 18%, rgba(255,255,255,0.16), rgba(255,255,255,0) 60%), repeating-linear-gradient(0deg, rgba(0,0,0,0.13) 0 1px, rgba(0,0,0,0) 1px 3px);
+           box-shadow: inset 0 0 50px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(0,0,0,0.6); }
+  .playbadge { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff; padding-left:4px; background:rgba(20,20,28,0.55); box-shadow:0 4px 14px rgba(0,0,0,0.5); }
+  .teletext { position:absolute; inset:0; z-index:6; cursor:pointer; display:none; background: #06080B; color: #86F79E; padding: 16px 18px; font: 14px/1.25 "VT323", monospace; overflow:hidden; text-shadow: 0 0 6px rgba(134,247,158,0.5); }
+  .teletext b { display:block; font-weight: 400; color: #F2F075; margin-bottom: 6px; }
+  .apod-expanded .teletext { display:block; }
+  .badge { position:absolute; left: 50%; bottom: 9px; transform: translateX(-50%); font: 400 6px/1 "Michroma", sans-serif; letter-spacing: 2.5px; color: var(--brass); text-shadow: 0 -1px 0 rgba(0,0,0,0.8); white-space: nowrap; }
+  .stalk { position:absolute; left: 50%; top: 218px; width: 26px; height: 28px; margin-left: -13px; background: linear-gradient(90deg, #8C6E38, #E2C27C 45%, #8C6E38); box-shadow: 0 6px 8px rgba(0,0,0,0.4); }
+  .stalk::before { content:""; position:absolute; left: -18px; top: -3px; width: 62px; height: 12px; border-radius: 6px; background: linear-gradient(180deg, #E2C27C, #9A7A40); box-shadow: 0 3px 5px rgba(0,0,0,0.4); }
+  .cabinet { position:absolute; left: 0; right: 0; bottom: 0; height: 110px; border-radius: 5px;
+             background: linear-gradient(90deg, #E4C797 0%, #D2B07A 30%, #E0C28F 60%, #CDA96F 100%);
+             box-shadow: 0 30px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -2px 0 rgba(0,0,0,0.2), 0 0 0 1px #9C7E4E; }
+  .cabinet::before { content:""; position:absolute; inset:0; border-radius: inherit; pointer-events:none; opacity: 0.45; mix-blend-mode: multiply; background: repeating-linear-gradient(0deg, rgba(90,50,0,0.10) 0 1px, rgba(0,0,0,0) 1px 7px), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E"); }
+  .panel { position:absolute; left: 12px; right: 12px; top: 12px; bottom: 12px; border-radius: 3px; background: linear-gradient(180deg, #F5F0E1, var(--panel)); box-shadow: inset 0 0 0 1px #C6BBA0, inset 0 1px 0 #fff; }
+  .title { position:absolute; left: 14px; right: 96px; top: 12px; font: 600 11px/1.25 var(--ui); color:#2B2622; letter-spacing: -0.1px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; cursor:pointer; }
+  .credit { position:absolute; left: 14px; right: 96px; bottom: 12px; font: 500 8.5px/1.2 var(--ui); color:#7A7266; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .window { position:absolute; right: 52px; top: 14px; width: 34px; height: 52px; border-radius: 3px; cursor:pointer; background: radial-gradient(circle at 50% 30%, #FFF3C8, #E8CD86 70%); box-shadow: inset 0 0 0 1px #8C6E38, inset 0 0 8px rgba(120,80,0,0.4), 0 0 8px rgba(255,220,140,0.5); display:flex; flex-direction:column; align-items:center; justify-content:center; gap: 3px; }
+  .window b { font: 400 6px/1 "Michroma", sans-serif; letter-spacing: 1px; color:#5A3F10; } .window i { font: 500 8px/1.15 var(--ui); font-style: normal; color:#3A2A0A; letter-spacing: 0.5px; text-align:center; white-space: pre-line; }
+  .knob { position:absolute; width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #F0D89A, #9A7A40 70%); box-shadow: 0 2px 3px rgba(0,0,0,0.4), inset 0 0 0 1px #6E5222; }
+  .knob::after { content:""; position:absolute; left: 50%; top: 3px; width: 2px; height: 6px; margin-left: -1px; background: #3A2A0A; }
+  .knob.a { right: 20px; top: 14px; } .knob.b { right: 20px; top: 46px; transform: rotate(80deg); }
 `;
 // Deterministic starfield (plus one bright hero star) for the fallback backdrop.
 const STARS = (() => {
@@ -457,22 +470,29 @@ export const render = (props) => {
   if (loading) return <Skel tint={T.tintPurple} />;
   return (
     <div data-apod-root aria-label={`Astronomy picture of the day: ${m.title}`}>
+      <div className="tube">
+        <div className="bezel">
+          <div className="screen" onClick={() => m.link && run(`open "${m.link}"`)}>
+            {m.isMp4 ? <video className="bg" src={m.url} autoPlay loop muted playsInline /> : m.url ? <img className="bg" src={m.url} />
+              : (<div className="cosmic">{STARS.map((s, i) => <div key={i} className="star" style={{ left: `${s.x}%`, top: `${s.y}%`, width: `${s.r}px`, height: `${s.r}px`, opacity: s.o }} />)}<div className="hero" style={{ left: `${HERO.x}%`, top: `${HERO.y}%`, width: `${HERO.r * 2}px`, height: `${HERO.r * 2}px` }} /></div>)}
+            {m.mediaType === "video" && !m.isMp4 && m.url && <div className="playbadge">&#x25B6;</div>}
+            <div className="glass" />
+            <div className="teletext" onClick={toggleExpand}><b>{m.title}</b>{m.caption.slice(0, 520)}{m.caption.length > 520 ? "…" : ""}</div>
+          </div>
+        </div>
+        <div className="badge">PICTURE OF THE DAY</div>
+      </div>
+      <div className="stalk" />
+      <div className="cabinet">
+        <div className="panel">
+          <div className="title" title="Read the explanation" onClick={toggleExpand}>{m.title}</div>
+          <div className="credit">{m.credit ? `© ${m.credit}` : "NASA · Astronomy Picture of the Day"}</div>
+          <div className="window" title="Open the APOD page" onClick={() => run(`open "${apodPage(m.iso)}"`)}><b>APOD</b><i>{(m.date || "").replace(/ /g, "\n")}</i></div>
+          <span className="knob a" /><span className="knob b" />
+        </div>
+      </div>
       <DragHandle k="apod" />
       <ResizeHandle k="apod" />
-      <div className="print">
-        <span className="tape tl" /><span className="tape tr" />
-        <div className="photo" onClick={() => m.link && run(`open "${m.link}"`)}>
-          {m.isMp4 ? <video className="bg" src={m.url} autoPlay loop muted playsInline /> : m.url ? <img className="bg" src={m.url} />
-            : (<div className="cosmic">{STARS.map((s, i) => <div key={i} className="star" style={{ left: `${s.x}%`, top: `${s.y}%`, width: `${s.r}px`, height: `${s.r}px`, opacity: s.o }} />)}<div className="hero" style={{ left: `${HERO.x}%`, top: `${HERO.y}%`, width: `${HERO.r * 2}px`, height: `${HERO.r * 2}px` }} /></div>)}
-          {m.mediaType === "video" && !m.isMp4 && m.url && <div className="playbadge">&#x25B6;</div>}
-        </div>
-        <div className="cap" title="Click for the full explanation" onClick={toggleExpand}>
-          <div className="title">{m.title}</div>
-          <div className="credit">{m.credit ? `© ${m.credit}` : "NASA · Astronomy Picture of the Day"}</div>
-        </div>
-        <div className="expand" onClick={toggleExpand}><div className="etitle">{m.title}</div><div className="etext">{m.caption}</div>{m.credit && <div className="ecredit">{m.credit}</div>}</div>
-      </div>
-      <div className="date" onClick={() => run(`open "${apodPage(m.iso)}"`)}>{m.date}</div>
       {staleTs && <Stale ts={staleTs} />}
     </div>
   );
