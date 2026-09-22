@@ -12,13 +12,17 @@ runs on any Mac with no extra files beyond the bundled assets.
 
 ![screenshot](media/screenshot.png)
 
+The picture is a physical print: white-bordered, taped to the desk at two corners, the title handwritten underneath and the date typed on the border; the explanation is on the back. Typefaces: Caveat, Special Elite, and Barlow Condensed. All fonts are under the SIL Open Font License; see `daily-astronomy-photo.widget/fonts/OFL.txt`.
+
+## Before and after
+
+![Before and after](media/before-after.png)
+
 ### On the desktop
 
 The widget running alongside the full set:
 
-![The Übersicht widget suite running on a desktop](https://raw.githubusercontent.com/jke48222/widget-suite/main/homescreen.gif)
-
-[Full-resolution video](media/homescreen.mp4)
+![The Übersicht widget suite composed on one desktop](https://raw.githubusercontent.com/jke48222/widget-suite/main/homescreen.png)
 
 ## Requirements
 

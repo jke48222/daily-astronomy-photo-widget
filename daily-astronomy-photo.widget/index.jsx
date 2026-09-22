@@ -1,4 +1,4 @@
-import { React, run } from "uebersicht";
+import { React } from "uebersicht";
 // --- Inlined design system (self-contained; formerly theme.js) ---
 // Shared design system for the widget set: color tokens, fonts, layout, the
 // common card shell, drag/resize handles, a last-known-good cache, and the
@@ -131,7 +131,7 @@ const card = (variant, w, h, x = 0, y = 0) => `
   .ws-drag  { position:absolute; top:6px; left:6px; z-index:30;
               width:18px; height:18px; border-radius:6px;
               display:flex; align-items:center; justify-content:center;
-              font-size:11px; line-height:1; cursor:grab; opacity:0.22;
+              font-size:11px; line-height:1; cursor:grab; opacity:0.42;
               transition:opacity .15s ease; user-select:none;
               -webkit-user-select:none;
               color:${variant === "dark" ? T.onDarkMute : T.inkMute};
@@ -143,7 +143,7 @@ const card = (variant, w, h, x = 0, y = 0) => `
   .ws-resize { position:absolute; bottom:5px; right:5px; z-index:30;
                width:16px; height:16px; border-radius:5px;
                display:flex; align-items:center; justify-content:center;
-               font-size:11px; line-height:1; cursor:nwse-resize; opacity:0.22;
+               font-size:11px; line-height:1; cursor:nwse-resize; opacity:0.42;
                transition:opacity .15s ease; user-select:none;
                -webkit-user-select:none;
                color:${variant === "dark" ? T.onDarkMute : T.inkMute};
@@ -344,7 +344,6 @@ const resolve = (key, props, parse, mock) => {
   return { data: mock, mock: true };
 };
 // --- End inlined design system ---
-
 // NASA Astronomy Picture of the Day, shown full-bleed on a dark card.
 //
 // Image days render the photo; video days render an inline <video> when NASA
@@ -361,47 +360,39 @@ export const command =
 
 export const refreshFrequency = 1000 * 60 * 60 * 6;
 
-export const className = card("dark", 320, 320, ...LAYOUT.apod) + `
-  padding: 0;
-  .bg      { position:absolute; inset:0; width:100%; height:100%;
-             object-fit:cover; cursor:pointer; }
-  .cosmic  { position:absolute; inset:0;
-             background:
-               radial-gradient(240px at 30% 35%, rgba(124,77,196,0.85), transparent),
-               radial-gradient(200px at 70% 55%, rgba(196,77,150,0.55), transparent),
-               #0a0a14; }
-  .star    { position:absolute; border-radius:50%; background:#fff; }
-  .hero    { position:absolute; border-radius:50%; background:#fff;
-             box-shadow: 0 0 10px 3px rgba(255,255,255,0.85),
-                         0 0 24px 8px rgba(168,97,222,0.45); }
-  .playbadge { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-               width:56px; height:56px; border-radius:50%; cursor:pointer;
-               display:flex; align-items:center; justify-content:center;
-               font-size:20px; color:#fff; padding-left:4px;
-               background:rgba(20,20,28,0.55); backdrop-filter:blur(6px);
-               box-shadow:0 4px 14px rgba(0,0,0,0.5); }
-  .date    { position:absolute; top:12px; right:12px; ${caption("rgba(255,255,255,0.7)")}
-             font-size:9px; padding:6px; cursor:pointer; }
-  .overlay { position:absolute; left:0; right:0; bottom:0; height:180px;
-             background:linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)); }
-  .copy    { position:absolute; left:16px; right:16px; bottom:16px; cursor:pointer; }
-  .title   { font-family:${serif}; font-style:italic; font-size:26px;
-             letter-spacing:-0.5px; line-height:1.05; }
-  .caption { font-family:${sans}; font-size:11px; color:rgba(255,255,255,0.6);
-             margin-top:6px; display:-webkit-box; -webkit-line-clamp:2;
-             -webkit-box-orient:vertical; overflow:hidden; }
-  .credit  { ${caption("rgba(255,255,255,0.4)")} font-size:8px; margin-top:8px; }
-  .expand  { position:absolute; inset:0; z-index:6; cursor:pointer;
-             background:rgba(8,8,14,0.92); backdrop-filter:blur(8px);
-             padding:22px; overflow-y:auto; display:none; }
+const FONTS = "daily-astronomy-photo.widget/fonts";
+// The picture as a physical print: a white-bordered photo taped to the desk
+// at two corners, the title handwritten under it, the date typed on the
+// border. Click the photo to open the full image, the caption to read the
+// explanation on the back, the date to open the APOD page.
+export const className = card("dark", 320, 330, ...LAYOUT.apod) + `
+  @font-face { font-family: "Caveat"; src: url("${FONTS}/Caveat-700.woff2") format("woff2"); font-weight: 700; }
+  @font-face { font-family: "Special Elite"; src: url("${FONTS}/SpecialElite-400.woff2") format("woff2"); }
+  @font-face { font-family: "Barlow Condensed"; src: url("${FONTS}/BarlowCondensed-600.woff2") format("woff2"); font-weight: 600; }
+  --type: "Special Elite", "Courier New", monospace; --hand: "Caveat", "Bradley Hand", cursive;
+  background: transparent; box-shadow: none; backdrop-filter: none; padding: 0; overflow: visible; user-select:none; -webkit-user-select:none;
+  .ws-stale { top: 26px; right: 30px; color: #8A8378; }
+  .ws-drag { top: 20px; left: 16px; color:#9a9184; background: rgba(0,0,0,0.05); } .ws-resize { bottom: 34px; right: 14px; color:#9a9184; background: rgba(0,0,0,0.05); }
+  .print { position:absolute; left: 8px; right: 8px; top: 12px; bottom: 26px; background: #FBFAF6; padding: 10px 10px 40px; transform: rotate(-1.4deg);
+           box-shadow: 0 18px 36px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.06); }
+  .photo { position:absolute; left: 10px; right: 10px; top: 10px; bottom: 44px; overflow:hidden; background:#07070f; cursor:pointer; }
+  .photo .bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .cosmic { position:absolute; inset:0; background: radial-gradient(240px at 30% 35%, rgba(124,77,196,0.85), transparent), radial-gradient(200px at 70% 55%, rgba(196,77,150,0.55), transparent), #0a0a14; }
+  .star { position:absolute; border-radius:50%; background:#fff; }
+  .hero { position:absolute; border-radius:50%; background:#fff; box-shadow: 0 0 10px 3px rgba(255,255,255,0.85), 0 0 24px 8px rgba(168,97,222,0.45); }
+  .tape { position:absolute; width: 70px; height: 20px; background: rgba(255,241,204,0.6); box-shadow: 0 1px 2px rgba(0,0,0,0.18); backdrop-filter: blur(0.5px); }
+  .tape.tl { left: -20px; top: -6px; transform: rotate(-38deg); } .tape.tr { right: -20px; top: -6px; transform: rotate(38deg); }
+  .cap { position:absolute; left: 12px; right: 12px; bottom: 8px; cursor:pointer; }
+  .title { font: 700 17px/1.1 var(--hand); color:#2B2622; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .credit { font: 9px/1.2 var(--type); color:#8A8378; margin-top: 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .date { position:absolute; right: 12px; top: 302px; font: 10px/1 var(--type); color: rgba(255,255,255,0.75); letter-spacing: 1px; cursor:pointer; }
+  .playbadge { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:52px; height:52px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff; padding-left:4px; background:rgba(20,20,28,0.55); box-shadow:0 4px 14px rgba(0,0,0,0.5); }
+  .expand { position:absolute; inset:0; z-index:6; cursor:pointer; background: #F3EDDF; padding: 18px 16px; overflow-y:auto; display:none; box-shadow: inset 0 0 0 1px rgba(43,38,34,0.12); }
   .apod-expanded .expand { display:block; }
-  .etitle  { font-family:${serif}; font-style:italic; font-size:20px;
-             color:${T.onDark}; line-height:1.1; }
-  .etext   { font-family:${sans}; font-size:12px; line-height:1.5;
-             color:rgba(255,255,255,0.78); margin-top:12px; }
-  .ecredit { ${caption("rgba(255,255,255,0.45)")} font-size:8px; margin-top:14px; }
+  .etitle { font: 700 18px/1.1 var(--hand); color:#2B2622; }
+  .etext { font: 10.5px/1.5 var(--type); color:#3A342E; margin-top: 10px; }
+  .ecredit { font: 600 8px/1 var(--cond, "Barlow Condensed"); letter-spacing: 1.6px; color:#8A8378; text-transform:uppercase; margin-top: 12px; }
 `;
-
 // Deterministic starfield (plus one bright hero star) for the fallback backdrop.
 const STARS = (() => {
   let s = 9;
@@ -464,44 +455,24 @@ const toggleExpand = (e) => {
 export const render = (props) => {
   const { data: m, loading, staleTs } = resolve("apod", props, parse, MOCK);
   if (loading) return <Skel tint={T.tintPurple} />;
-
   return (
     <div data-apod-root aria-label={`Astronomy picture of the day: ${m.title}`}>
       <DragHandle k="apod" />
       <ResizeHandle k="apod" />
-      {m.isMp4
-        ? <video className="bg" src={m.url} autoPlay loop muted playsInline
-                 onClick={() => m.link && run(`open "${m.link}"`)} />
-        : m.url
-          ? <img className="bg" src={m.url} onClick={() => m.link && run(`open "${m.link}"`)} />
-          : (
-            <div className="cosmic">
-              {STARS.map((s, i) => (
-                <div key={i} className="star" style={{
-                  left: `${s.x}%`, top: `${s.y}%`,
-                  width: `${s.r}px`, height: `${s.r}px`, opacity: s.o,
-                }} />
-              ))}
-              <div className="hero" style={{
-                left: `${HERO.x}%`, top: `${HERO.y}%`,
-                width: `${HERO.r * 2}px`, height: `${HERO.r * 2}px`,
-              }} />
-            </div>
-          )}
-      {m.mediaType === "video" && !m.isMp4 && m.url &&
-        <div className="playbadge" onClick={() => m.link && run(`open "${m.link}"`)}>&#x25B6;</div>}
+      <div className="print">
+        <span className="tape tl" /><span className="tape tr" />
+        <div className="photo" onClick={() => m.link && run(`open "${m.link}"`)}>
+          {m.isMp4 ? <video className="bg" src={m.url} autoPlay loop muted playsInline /> : m.url ? <img className="bg" src={m.url} />
+            : (<div className="cosmic">{STARS.map((s, i) => <div key={i} className="star" style={{ left: `${s.x}%`, top: `${s.y}%`, width: `${s.r}px`, height: `${s.r}px`, opacity: s.o }} />)}<div className="hero" style={{ left: `${HERO.x}%`, top: `${HERO.y}%`, width: `${HERO.r * 2}px`, height: `${HERO.r * 2}px` }} /></div>)}
+          {m.mediaType === "video" && !m.isMp4 && m.url && <div className="playbadge">&#x25B6;</div>}
+        </div>
+        <div className="cap" title="Click for the full explanation" onClick={toggleExpand}>
+          <div className="title">{m.title}</div>
+          <div className="credit">{m.credit ? `© ${m.credit}` : "NASA · Astronomy Picture of the Day"}</div>
+        </div>
+        <div className="expand" onClick={toggleExpand}><div className="etitle">{m.title}</div><div className="etext">{m.caption}</div>{m.credit && <div className="ecredit">{m.credit}</div>}</div>
+      </div>
       <div className="date" onClick={() => run(`open "${apodPage(m.iso)}"`)}>{m.date}</div>
-      <div className="overlay" />
-      <div className="copy" title="Click for full description" onClick={toggleExpand}>
-        <div className="title">{m.title}</div>
-        <div className="caption">{m.caption}</div>
-        {m.credit && <div className="credit">{m.credit}</div>}
-      </div>
-      <div className="expand" onClick={toggleExpand}>
-        <div className="etitle">{m.title}</div>
-        <div className="etext">{m.caption}</div>
-        {m.credit && <div className="ecredit">{m.credit}</div>}
-      </div>
       {staleTs && <Stale ts={staleTs} />}
     </div>
   );
